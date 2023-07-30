@@ -18,4 +18,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
+
+    @Override
+    public EmployeeDto getEmployeeById(Long id) {
+        return null;
+    }
 }
