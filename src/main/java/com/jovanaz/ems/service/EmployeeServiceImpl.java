@@ -2,6 +2,7 @@ package com.jovanaz.ems.service;
 
 import com.jovanaz.ems.dto.EmployeeDto;
 import com.jovanaz.ems.entity.Employee;
+import com.jovanaz.ems.exception.ResourceNotFoundException;
 import com.jovanaz.ems.mapper.EmployeeMapper;
 import com.jovanaz.ems.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long id) {
-        return null;
+    public EmployeeDto getEmployeeById(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee with id " + employeeId+
+                " not found"));
+
+        return EmployeeMapper.mapToEmployeeDto(employee);
     }
 }
