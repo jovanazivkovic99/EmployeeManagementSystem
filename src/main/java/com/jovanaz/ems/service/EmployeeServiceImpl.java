@@ -3,6 +3,7 @@ package com.jovanaz.ems.service;
 import com.jovanaz.ems.dto.EmployeeDto;
 import com.jovanaz.ems.entity.Employee;
 import com.jovanaz.ems.exception.ResourceNotFoundException;
+import com.jovanaz.ems.mapper.EmployeeMapStructMapper;
 import com.jovanaz.ems.mapper.EmployeeMapper;
 import com.jovanaz.ems.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService{
     private final EmployeeRepository employeeRepository;
+    private final EmployeeMapStructMapper employeeMapStructMapper;
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
-        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+        Employee employee = employeeMapStructMapper.mapToEmployee(employeeDto);
         Employee savedEmployee = employeeRepository.save(employee);
 
-        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+        return employeeMapStructMapper.mapToEmployeeDto(savedEmployee);
     }
 
     @Override
@@ -28,14 +30,14 @@ public class EmployeeServiceImpl implements EmployeeService{
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee with id " + employeeId+
                 " not found"));
 
-        return EmployeeMapper.mapToEmployeeDto(employee);
+        return employeeMapStructMapper.mapToEmployeeDto(employee);
     }
 
     @Override
     public List<EmployeeDto> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
 
-        return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+        return employees.stream().map((employee) -> employeeMapStructMapper.mapToEmployeeDto(employee))
                 .collect(Collectors.toList());
     }
 
@@ -43,11 +45,12 @@ public class EmployeeServiceImpl implements EmployeeService{
     public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new ResourceNotFoundException("Employee with id " + employeeId+
                 " not found"));
+
         employee.setFirstName(updatedEmployee.getFirstName());
         employee.setLastName(updatedEmployee.getLastName());
         employee.setEmail(updatedEmployee.getEmail());
         Employee savedEmployee = employeeRepository.save(employee);
-        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+        return employeeMapStructMapper.mapToEmployeeDto(savedEmployee);
     }
 
     @Override
